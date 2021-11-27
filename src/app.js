@@ -13,7 +13,8 @@ const responseErrors = {
 }
 
 module.exports = http.createServer((req, res) => {
-  console.log(req.url)
+  //console.log(req.url)
+
   //GET person
   if (req.url === "/person" && req.method === "GET") {
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -23,7 +24,7 @@ module.exports = http.createServer((req, res) => {
   //GET person/{personId}
   if (req.url.match(/^\/person\/(.+)/) && req.method === "GET") {
     let personId = +req.url.match(/^\/person\/(.+)/)[1];
-    let person = persons.find(x => x.id === personId);
+    let person = persons.find(x => x?.id === personId);
 
     if (!personId) {
       res.writeHead(400, { "Content-Type": "application/json" });
@@ -119,10 +120,9 @@ module.exports = http.createServer((req, res) => {
       return res.end(JSON.stringify({ message: responseErrors["400"] }));
     }
 
-    if (personIndex) {
+    if (personIndex >= 0) {
       res.writeHead(204, { "Content-Type": "application/json" });
       delete persons[personIndex];
-      console.log(persons);
       return res.end();
     } else {
       res.writeHead(404, { "Content-Type": "application/json" });
