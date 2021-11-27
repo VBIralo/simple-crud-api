@@ -2,7 +2,7 @@ require('dotenv').config();
 const http = require('http');
 const PORT = process.env.PORT || 3000;
 
-const persons = [{ id: 1, name: 'Vlad' }];
+const persons = [{ id: 1, name: "Vlad" }];
 
 const server = http.createServer((req, res) => {
   console.log(req.url)
@@ -33,13 +33,12 @@ const server = http.createServer((req, res) => {
 
   //POST person
   if (req.url === "/person" && req.method === "POST") {
-    let body = '';
-    req.on('data', chunk => {
+    let body = "";
+    req.on("data", chunk => {
       body += chunk.toString();
     });
 
-    // Do something with it
-    req.on("end", function () {
+    return req.on("end", function () {
       let { name, age, hobbies } = JSON.parse(body);
 
       if (typeof (name) == 'string' && typeof (age) == 'number' && !!hobbies) {
@@ -54,6 +53,33 @@ const server = http.createServer((req, res) => {
   "age": number, 
   "hobbies": array of strings or empty array
 }` }));
+      }
+    });
+  }
+
+  //PUT person/{personId}
+  if (req.url.match(/^\/person\/(.+)/) && req.method === "PUT") {
+    let personId = +req.url.match(/^\/person\/(.+)/)[1];
+    let person = persons.find(x => x.id === personId);
+    let body = "";
+    req.on("data", chunk => {
+      body += chunk.toString();
+    });
+
+    return req.on("end", function () {
+      let { name, age, hobbies } = JSON.parse(body);
+
+      if (!personId) {
+        res.writeHead(400, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ message: "The PersonID parameter is invalid." }));
+      }
+
+      if (person) {
+        res.writeHead(200, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify(UpdatePerson(personId, name, age, hobbies)));
+      } else {
+        res.writeHead(404, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({ message: "This person doesn't exist." }));
       }
     });
   }
@@ -82,4 +108,14 @@ CreatePerson = (name, age, hobbies) => {
   persons.push(person);
 
   return person;
+}
+
+UpdatePerson = (id, name, age, hobbies) => {
+  let personId = persons.findIndex(x => x.id === id);
+
+  if (name !== undefined) persons[personId].name = name;
+  if (age !== undefined) persons[personId].age = age;
+  if (hobbies !== undefined) persons[personId].hobbies = hobbies;
+
+  return persons[personId];
 }
