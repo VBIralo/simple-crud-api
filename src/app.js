@@ -1,6 +1,4 @@
-require('dotenv').config();
 const http = require('http');
-const PORT = process.env.PORT || 3000;
 
 const persons = [];
 
@@ -14,7 +12,7 @@ const responseErrors = {
   "400": "The PersonID parameter is invalid.",
 }
 
-const server = http.createServer((req, res) => {
+module.exports = http.createServer((req, res) => {
   console.log(req.url)
   //GET person
   if (req.url === "/person" && req.method === "GET") {
@@ -139,9 +137,6 @@ const server = http.createServer((req, res) => {
   }
 });
 
-server.listen(PORT, () => {
-  console.log(`server started on port: ${PORT}`);
-});
 
 CreatePerson = (name, age, hobbies) => {
 

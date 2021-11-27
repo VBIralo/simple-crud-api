@@ -8,7 +8,7 @@
     "https": false
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/.bin/mocha",
     "start:dev": "nodemon src/app.js",
     "start:prod": "webpack --config webpack.config.prod.js && node dist/app.js"
   },
@@ -27,8 +27,11 @@
     "webpack-cli": "^4.9.1"
   },
   "dependencies": {
+    "chai": "^4.3.4",
     "dotenv": "^10.0.0",
     "fs": "0.0.1-security",
-    "node-polyfill-webpack-plugin": "^1.1.4"
+    "mocha": "^9.1.3",
+    "node-polyfill-webpack-plugin": "^1.1.4",
+    "supertest": "^6.1.6"
   }
 }
