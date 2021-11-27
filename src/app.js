@@ -154,7 +154,7 @@ CreatePerson = (name, age, hobbies) => {
 }
 
 UpdatePerson = (id, name, age, hobbies) => {
-  let personId = persons.findIndex(x => x.id === id);
+  let personId = persons.findIndex(x => x?.id === id);
 
   if (name !== undefined) persons[personId].name = name;
   if (age !== undefined) persons[personId].age = age;
