@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "start:dev": "nodemon src/app.js",
+    "start:dev": "nodemon index.js",
     "start:prod": "webpack --config webpack.config.prod.js && node dist/app.js"
   },
   "repository": {
