@@ -2,31 +2,17 @@ require('dotenv').config();
 const http = require('http');
 const PORT = process.env.PORT || 3000;
 
-const persons = [
+const persons = [];
+
+const responseErrors = {
+  "500": `The body content should be of the type:
   {
-    "name": "Max",
-    "age": 4,
-    "hobbies": [],
-    "id": 1
-  }, {
-    "name": "Eva",
-    "age": 4,
-    "hobbies": [],
-    "id": 2
-  },
-  {
-    "name": "Vladislav",
-    "age": 4,
-    "hobbies": [],
-    "id": 3
-  },
-  {
-    "name": "Tanya",
-    "age": 4,
-    "hobbies": [],
-    "id": 4
-  }
-];
+    "name": string, 
+    "age": number, 
+    "hobbies": array of strings or empty array
+  } `,
+  "400": "The PersonID parameter is invalid.",
+}
 
 const server = http.createServer((req, res) => {
   console.log(req.url)
@@ -43,7 +29,7 @@ const server = http.createServer((req, res) => {
 
     if (!personId) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ message: "The PersonID parameter is invalid." }));
+      return res.end(JSON.stringify({ message: responseErrors["400"] }));
     }
 
     if (person) {
@@ -63,7 +49,15 @@ const server = http.createServer((req, res) => {
     });
 
     return req.on("end", function () {
-      let { name, age, hobbies } = JSON.parse(body);
+      try {
+        data = JSON.parse(body);
+      } catch (e) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({
+          message: responseErrors["500"]
+        }));
+      }
+      let { name, age, hobbies } = data;
 
       if (typeof (name) == 'string' && typeof (age) == 'number' && !!hobbies) {
         res.writeHead(201, { "Content-Type": "application/json" });
@@ -91,11 +85,19 @@ const server = http.createServer((req, res) => {
     });
 
     return req.on("end", function () {
-      let { name, age, hobbies } = JSON.parse(body);
+      try {
+        data = JSON.parse(body);
+      } catch (e) {
+        res.writeHead(500, { "Content-Type": "application/json" });
+        return res.end(JSON.stringify({
+          message: responseErrors["500"]
+        }));
+      }
+      let { name, age, hobbies } = data;
 
       if (!personId) {
         res.writeHead(400, { "Content-Type": "application/json" });
-        return res.end(JSON.stringify({ message: "The PersonID parameter is invalid." }));
+        return res.end(JSON.stringify({ message: responseErrors["404"] }));
       }
 
       if (person) {
@@ -116,7 +118,7 @@ const server = http.createServer((req, res) => {
 
     if (!personId) {
       res.writeHead(400, { "Content-Type": "application/json" });
-      return res.end(JSON.stringify({ message: "The PersonID parameter is invalid." }));
+      return res.end(JSON.stringify({ message: responseErrors["400"] }));
     }
 
     if (personIndex) {
