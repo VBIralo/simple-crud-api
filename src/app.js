@@ -77,7 +77,7 @@ module.exports = http.createServer((req, res) => {
   //PUT person/{personId}
   if (req.url.match(/^\/person\/(.+)/) && req.method === "PUT") {
     let personId = +req.url.match(/^\/person\/(.+)/)[1];
-    let person = persons.find(x => x.id === personId);
+    let person = persons.find(x => x?.id === personId);
     let body = "";
     req.on("data", chunk => {
       body += chunk.toString();
@@ -112,7 +112,7 @@ module.exports = http.createServer((req, res) => {
   //DELETE person/{personId}
   if (req.url.match(/^\/person\/(.+)/) && req.method === "DELETE") {
     let personId = +req.url.match(/^\/person\/(.+)/)[1];
-    let personIndex = persons.findIndex(x => x.id === personId);
+    let personIndex = persons.findIndex(x => x?.id === personId);
 
 
     if (!personId) {
