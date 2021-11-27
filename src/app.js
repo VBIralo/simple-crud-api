@@ -2,7 +2,31 @@ require('dotenv').config();
 const http = require('http');
 const PORT = process.env.PORT || 3000;
 
-const persons = [{ id: 1, name: "Vlad" }];
+const persons = [
+  {
+    "name": "Max",
+    "age": 4,
+    "hobbies": [],
+    "id": 1
+  }, {
+    "name": "Eva",
+    "age": 4,
+    "hobbies": [],
+    "id": 2
+  },
+  {
+    "name": "Vladislav",
+    "age": 4,
+    "hobbies": [],
+    "id": 3
+  },
+  {
+    "name": "Tanya",
+    "age": 4,
+    "hobbies": [],
+    "id": 4
+  }
+];
 
 const server = http.createServer((req, res) => {
   console.log(req.url)
@@ -84,10 +108,32 @@ const server = http.createServer((req, res) => {
     });
   }
 
+  //DELETE person/{personId}
+  if (req.url.match(/^\/person\/(.+)/) && req.method === "DELETE") {
+    let personId = +req.url.match(/^\/person\/(.+)/)[1];
+    let personIndex = persons.findIndex(x => x.id === personId);
+
+
+    if (!personId) {
+      res.writeHead(400, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "The PersonID parameter is invalid." }));
+    }
+
+    if (personIndex) {
+      res.writeHead(204, { "Content-Type": "application/json" });
+      delete persons[personIndex];
+      console.log(persons);
+      return res.end();
+    } else {
+      res.writeHead(404, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ message: "This person doesn't exist." }));
+    }
+  }
+
   // If no route present
   else {
     res.writeHead(404, { "Content-Type": "application/json" });
-    return res.end(JSON.stringify({ message: "Route not found" }));
+    return res.end(JSON.stringify({ message: "Route not found. Use only /person or /person/{personID}." }));
   }
 });
 
